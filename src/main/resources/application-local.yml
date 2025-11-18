@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:2392/demo
+    username: postgres
+    password: postgres
+  flyway:
+    url: jdbc:postgresql://127.0.0.1:2392/demo
+    user: postgres
+    password: postgres
+server:
+  port: 8085

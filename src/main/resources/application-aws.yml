@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://ec2-18-223-248-173.us-east-2.compute.amazonaws.com:2392/demo?currentSchema=public
+    username: postgres
+    password: postgres
+  flyway:
+    url: jdbc:postgresql://ec2-18-223-248-173.us-east-2.compute.amazonaws.com:2392/demo?currentSchema=public
+    user: postgres
+    password: postgres
+server:
+  port: 8085

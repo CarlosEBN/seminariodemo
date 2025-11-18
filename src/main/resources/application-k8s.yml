@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres-service.demo-app.svc.cluster.local:2392/demo
+    username: postgres
+    password: postgres
+  flyway:
+    url: jdbc:postgresql://postgres-service.demo-app.svc.cluster.local:2392/demo
+    user: postgres
+    password: postgres
+server:
+  port: 8085
+  address: 0.0.0.0
