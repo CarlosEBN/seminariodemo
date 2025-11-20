@@ -1,0 +1,52 @@
+  version: "3.8"
+
+  services:
+    db:
+      image: mysql:8
+      container_name: mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+      command:
+        - --innodb-buffer-pool-size=${INNODB_BUFFER_POOL_SIZE}
+        - --max-connections=${MAX_CONNECTIONS}
+        - --table-open-cache=${TABLE_OPEN_CACHE}
+        - --performance-schema=${PERFORMANCE_SCHEMA}
+      volumes:
+        - mysql_data:/var/lib/mysql
+        # Descomenta para auto-importar SQL en PRIMER arranque (datadir vacío):
+        - ./initdb:/docker-entrypoint-initdb.d
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+        interval: 10s
+        timeout: 5s
+        retries: 10
+      # Si no necesitas MySQL desde fuera, comenta esta línea para no exponer 3306
+      ports:
+        - "3306:3306"
+      networks: [boossteam_net]
+      restart: unless-stopped
+
+    api:
+      image: ${API_IMAGE}
+      container_name: seminariodemo-api
+      depends_on:
+        db:
+          condition: service_healthy
+      environment:
+        SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        SPRING_DATASOURCE_USERNAME: root
+        SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        SERVER_PORT: ${API_PORT_CONTAINER}
+      ports:
+        - "${API_PORT_PUBLIC}:${API_PORT_CONTAINER}"
+      networks: [boossteam_net]
+      restart: unless-stopped
+
+  networks:
+    boossteam_net:
+      driver: bridge
+
+  volumes:
+    mysql_data:
+
